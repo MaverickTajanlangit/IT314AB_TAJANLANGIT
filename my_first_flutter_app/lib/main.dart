@@ -1,8 +1,76 @@
 import 'package:flutter/material.dart';
 
+// ===============================
+// PROFILE DATA MODEL
+// ===============================
+
+class Profile {
+  final String image;
+  final String? name;
+  final String? course;
+  final int age;
+  final String? hobby;
+
+  Profile({
+    required this.image,
+    this.name,
+    this.course,
+    required this.age,
+    this.hobby,
+  });
+}
+
+// ===============================
+// FIVE PROFILE DATA
+// ===============================
+
+Profile maverick = Profile(
+  image: "assets/profile.png",
+  name: "Maverick Tajanlangit",
+  course: "BPA - 3rd Year",
+  age: 20,
+  hobby: "Dancing",
+);
+
+Profile Bryan = Profile(
+  image: "assets/profile2.png",
+  name: "Bryan Quino",
+  course: "BSIT - 3rd Year",
+  age: 21,
+);
+
+Profile Leachim = Profile(
+  image: "assets/profile3.png",
+  name: "Leachim Dela Cerna",
+  age: 22,
+  hobby: "Clubbing",
+);
+
+Profile Julia = Profile(
+  image: "assets/profile4.png",
+  course: "BS Biology - 3rd Year",
+  age: 23,
+  hobby: "Cooking",
+);
+
+Profile James = Profile(
+  image: "assets/profile5.png",
+  name: "James Gulfan",
+  course: "BPED - 3rd Year",
+  age: 24,
+);
+
+// ===============================
+// MAIN
+// ===============================
+
 void main() {
   runApp(const MyApp());
 }
+
+// ===============================
+// MAIN APP
+// ===============================
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -11,204 +79,158 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+
       home: Scaffold(
         backgroundColor: const Color(0xFF8FA28A),
-        body: Center(
+
+        // ===============================
+        // SCROLLING WIDGET
+        // ===============================
+
+        body: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+
+              children: [
+
+                // PROFILE 1
+                ProfileCard(
+                  profile: maverick,
+                ),
+
+                const SizedBox(height: 15),
+
+                // PROFILE 2
+                ProfileCard(
+                  profile: Bryan,
+                ),
+
+                const SizedBox(height: 15),
+
+                // PROFILE 3
+                ProfileCard(
+                  profile: Leachim,
+                ),
+
+                const SizedBox(height: 15),
+
+                // PROFILE 4
+                ProfileCard(
+                  profile: Julia,
+                ),
+
+                const SizedBox(height: 15),
+
+                // PROFILE 5
+                ProfileCard(
+                  profile: James,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ===============================
+// REUSABLE PROFILE CARD
+// ===============================
+
+class ProfileCard extends StatelessWidget {
+  final Profile profile;
+
+  const ProfileCard({
+    super.key,
+    required this.profile,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 340,
+
+      child: Card(
+        color: const Color(0xFFC7D3C0),
+
+        child: Padding(
+          padding: const EdgeInsets.all(18),
+
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
+
             children: [
-              // Profile Card
-              SizedBox(
-                width: 340,
-                child: Card(
-                  color: const Color(0xFFC7D3C0),
-                  child: Padding(
-                    padding: const EdgeInsets.all(18),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        // Profile Image
-                        ClipOval(
-                          child: Image.asset(
-                            'assets/profile.png',
-                            width: 105,
-                            height: 105,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
 
-                        const SizedBox(height: 18),
-
-                        // Full Name
-                        const Text(
-                          'Maverick Tajanlangit',
-                          maxLines: 1,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'serif',
-                            fontSize: 26,
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
-
-                        const SizedBox(height: 10),
-
-                        // Course & Section
-                        const Text(
-                          'BS Information Technology - 3rd Year',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'serif',
-                            fontSize: 16,
-                          ),
-                        ),
-
-                        const SizedBox(height: 10),
-
-                        // Application Title
-                        const Text(
-                          'My First Flutter Application',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'serif',
-                            fontSize: 19,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-
-                        const SizedBox(height: 10),
-
-                        // Date
-                        const Text(
-                          'August 11, 2026',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'serif',
-                            fontSize: 15,
-                          ),
-                        ),
-
-                        const SizedBox(height: 10),
-
-                        // Hobby
-                        const Text(
-                          'Hobby: Dancing',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'serif',
-                            fontSize: 15,
-                          ),
-                        ),
-
-                        const SizedBox(height: 10),
-
-                        // Age and Birthdate
-                        SizedBox(
-                          width: 300,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                'Age: 20',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: 'serif',
-                                  fontSize: 15,
-                                ),
-                              ),
-                              const Text(
-                                'Birthdate: May 23, 2005',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: 'serif',
-                                  fontSize: 15,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+              // PROFILE IMAGE
+              ClipOval(
+                child: Image.asset(
+                  profile.image,
+                  width: 105,
+                  height: 105,
+                  fit: BoxFit.cover,
                 ),
               ),
 
-              const SizedBox(height: 18),
+              const SizedBox(height: 15),
 
-              
-              const Divider(
-                color: Colors.black,
-                thickness: 1,
+              // NAME
+              Text(
+                profile.name ?? "Not provided",
+
+                textAlign: TextAlign.center,
+
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontFamily: 'serif',
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  fontStyle: FontStyle.italic,
+                ),
               ),
 
-              const SizedBox(height: 18),
+              const SizedBox(height: 8),
 
-              // My Faves Card
-              SizedBox(
-                width: 340,
-                child: Card(
-                  color: const Color(0xFFC7D3C0),
-                  child: Padding(
-                    padding: const EdgeInsets.all(18),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'My Faves',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'serif',
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+              // COURSE
+              Text(
+                profile.course ?? "Course not provided",
 
-                        const SizedBox(height: 12),
+                textAlign: TextAlign.center,
 
-                        const Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                'Fave Game - Imposter Game',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: 'serif',
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Text(
-                                'Fave Food - Buldak',
-                                textAlign: TextAlign.right,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: 'serif',
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontFamily: 'serif',
+                  fontSize: 15,
+                ),
+              ),
 
-                        const SizedBox(height: 8),
+              const SizedBox(height: 8),
 
-                        const Text(
-                          'Fave Movie - Harry Potter',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'serif',
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+              // AGE
+              Text(
+                "Age: ${profile.age}",
+
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontFamily: 'serif',
+                  fontSize: 15,
+                ),
+              ),
+
+              const SizedBox(height: 8),
+
+              // HOBBY
+              Text(
+                "Hobby: ${profile.hobby ?? "Not provided"}",
+
+                textAlign: TextAlign.center,
+
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontFamily: 'serif',
+                  fontSize: 15,
                 ),
               ),
             ],
