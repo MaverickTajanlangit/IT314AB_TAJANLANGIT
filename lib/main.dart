@@ -1,101 +1,706 @@
-import 'package:flutter/material.dart';
-void main() {
-  runApp(const MyApp());
-}
+import 'package:flutter/material.dart'; 
+ 
+void main() { 
+  runApp(const MyApp()); 
+} 
+ 
+class MyApp extends StatelessWidget { 
+  const MyApp({super.key}); 
+ 
+  @override 
+  Widget build(BuildContext context) { 
+    return MaterialApp( 
+      debugShowCheckedModeBanner: false, 
+      title: 'My App', 
+      theme: ThemeData( 
+        brightness: Brightness.dark, 
+        scaffoldBackgroundColor: const Color.fromARGB(255, 60, 60, 60), 
+      ), 
+      home: _MyHomePageState(), 
+    ); 
+  } 
+} 
+ 
+class _MyHomePageState extends StatelessWidget { 
+  @override 
+  Widget build(BuildContext context) { 
+    return Scaffold( 
+      appBar: AppBar( 
+        backgroundColor: Colors.black, 
+        title: Text( 
+          'Social', 
+          style: TextStyle( 
+            fontFamily: 'arial', 
+            fontWeight: FontWeight.bold, 
+            fontSize: 45, 
+          ), 
+        ), 
+      ), 
+      body: Center( 
+        child: Column( 
+          mainAxisAlignment: .start, 
+          children: [ 
+            Card( 
+              margin: EdgeInsets.zero, 
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero), 
+              color: Colors.black, 
+              child: Padding( 
+                padding: EdgeInsetsGeometry.all(16.0), 
+                child: Row( 
+                  children: [ 
+                    Text( 
+                      'Friends', 
+                      style: TextStyle( 
+                        fontSize: 18, 
+                        fontWeight: FontWeight.bold, 
+                        fontFamily: 'sans-serif', 
+                      ), 
+                    ), 
+ 
+                    SizedBox(width: 20), 
+ 
+                    Text( 
+                      'Messages', 
+                      style: TextStyle( 
+                        fontSize: 18, 
+                        fontFamily: 'sans-serif', 
+                        color: Colors.grey, 
+                      ), 
+                    ), 
+ 
+                    SizedBox(width: 20), 
+ 
+                    Text( 
+                      'Requests', 
+                      style: TextStyle( 
+                        fontSize: 18, 
+                        fontFamily: 'sans-serif', 
+                        color: Colors.grey, 
+                      ), 
+                    ), 
+                  ], 
+                ), 
+              
+              ), 
+            ), 
+ 
+            Card( 
+              margin: EdgeInsets.only(top: 1, bottom: 0, left: 0, right: 0), 
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero), 
+              color: Colors.black, 
+              child: Padding( 
+                padding: EdgeInsetsGeometry.all(16.0), 
+                child: Card( 
+                  shape: RoundedRectangleBorder( 
+                    borderRadius: BorderRadiusGeometry.circular(15), 
+                  ), 
+ 
+                  child: Padding( 
+                    padding: EdgeInsetsGeometry.all(10), 
+                    child: Row( 
+                      children: [ 
+                        Icon(Icons.search, size: 30, color: Colors.white), 
+ 
+                        SizedBox(width: 5), 
+ 
+                        Text( 
+                          'Search', 
+                          style: TextStyle( 
+                            fontSize: 20, 
+                            color: Colors.white, 
+                            fontFamily: 'sans-serif', 
+                          ), 
+                        ), 
+                      ], 
+                    ), 
+                  ), 
+                ), 
+              ), 
+            ), 
+ 
+            Card( 
+              color: Colors.black, 
+              margin: EdgeInsets.zero, 
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero), 
+              child: Padding( 
+                padding: EdgeInsetsGeometry.only( 
+                  top: 0, 
+                  bottom: 16, 
+                  left: 25, 
+                  right: 16, 
+                ), 
+                child: Row( 
+                  children: [ 
+                    Icon( 
+                      Icons.circle_rounded, 
+                      size: 30, 
+                      color: Colors.red, 
+                    ), 
+                    SizedBox(width: 10), 
+                    Text( 
+                      'VALORANT', 
+                      style: TextStyle( 
+                        fontSize: 20, 
+                        fontFamily: 'sans-serif', 
+                        fontWeight: FontWeight.bold, 
+                        color: Colors.white, 
+                      ), 
+                    ), 
+                    SizedBox(width: 10), 
+                    Text( 
+                      '3', 
+                      style: TextStyle( 
+                        fontSize: 20, 
+                        fontFamily: 'sans-serif', 
+                        fontWeight: FontWeight.bold, 
+                        color: Colors.white, 
+                      ), 
+                    ), 
+                  ], 
+                ), 
+              ), 
+            ), 
+ 
+            Card( 
+              color: Colors.black, 
+              margin: EdgeInsets.zero, 
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero), 
+              child: Padding( 
+                padding: EdgeInsetsGeometry.only( 
+                  top: 0, 
+                  bottom: 16, 
+                  left: 30, 
+                  right: 16, 
+                ), 
+                child: Row( 
+                  children: [ 
+                    Column( 
+                      children: [ 
+                        CircleAvatar( 
+                          backgroundColor: Color.fromARGB(255, 60, 60, 60), 
+                          radius: 25, 
+                          child: Icon(Icons.person, color: Colors.red, size: 40), 
+                        ), 
+ 
+                        // SizedBox(height: -1), 
+                        Row( 
+                          children: [ 
+                            Icon( 
+                              Icons.circle, 
+                              size: 15, 
+                              color: Colors.black,
+                            ), 
+ 
+                            SizedBox( 
+                              width: 10, 
+                            ),
+ 
+                            Icon( 
+                              Icons.circle, 
+                              size: 15, 
+                              color: Colors.green, 
+                            ), 
+                          ], 
+                        ), 
+                      ], 
+                    ), 
+ 
+                    SizedBox(width: 10), 
+ 
+                    Column( 
+                      crossAxisAlignment: CrossAxisAlignment.start, 
+                      children: [ 
+                        Text( 
+                          'ParaAsaPud', 
+                          style: TextStyle( 
+                            fontSize: 20, 
+                            fontFamily: 'sans-serif', 
+                            fontWeight: FontWeight.bold, 
+                            color: Colors.white, 
+                          ), 
+                        ), 
+ 
+                        SizedBox(height: 5), 
+ 
+                        Row( 
+                          children: [ 
+                            Icon( 
+                              Icons.monitor, 
+                              size: 15, 
+                              color: Colors.white60, 
+                            ), 
+ 
+                            SizedBox(width: 1), 
+ 
+                            Text( 
+                              'Online - VALORANT', 
+                              style: TextStyle( 
+                                fontSize: 15, 
+                                fontFamily: 'sans-serif', 
+                                color: Colors.white, 
+                              ), 
+                            ), 
+                          ], 
+                        ), 
+                      ], 
+                    ), 
+                  ], 
+                ), 
+              ), 
+            ), 
+ 
+            Card( 
+              color: Colors.black, 
+              margin: EdgeInsets.zero, 
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero), 
+              child: Padding( 
+                padding: EdgeInsetsGeometry.only( 
+                  top: 0, 
+                  bottom: 16, 
+                  left: 30, 
+                  right: 16, 
+                ), 
+                child: Row( 
+                  children: [ 
+                    Column( 
+                      children: [ 
+                        CircleAvatar( 
+                          backgroundColor: Color.fromARGB(255, 60, 60, 60),
+                          radius: 25, 
+                          child: Icon(Icons.person, size: 40, color: Colors.red), 
+                        ), 
+ 
+                        // SizedBox(height: -1), 
+                        Row( 
+                          children: [ 
+                            Icon( 
+                              Icons.circle, 
+                              size: 15, 
+                              color: Colors.black,
+                            ), 
+ 
+                            SizedBox( 
+                              width: 10, 
+                            ), 
+ 
+                            Icon( 
+                              Icons.play_circle, 
+                              size: 15, 
+                              color: Colors.blue, 
+                            ), 
+                          ], 
+                        ), 
+                      ], 
+                    ), 
+ 
+                    SizedBox(width: 10), 
+ 
+                    Column( 
+                      crossAxisAlignment: CrossAxisAlignment.start, 
+                      children: [ 
+                        Text( 
+                          'NeverGrowOld', 
+                          style: TextStyle( 
+                            fontSize: 20, 
+                            fontFamily: 'sans-serif', 
+                            fontWeight: FontWeight.bold, 
+                            color: Colors.white, 
+                          ), 
+                        ), 
+ 
+                        SizedBox(height: 5), 
+ 
+                        Row( 
+                          children: [ 
+                            Icon( 
+                              Icons.monitor, 
+                              size: 15, 
+                              color: Colors.white, 
+                            ), 
+ 
+                            SizedBox(width: 1), 
+ 
+                            Text( 
+                              'Playing - VALORANT', 
+                              style: TextStyle( 
+                                fontSize: 15, 
+                                fontFamily: 'sans-serif', 
+                                color: Colors.white, 
+                              ), 
+                            ), 
+                          ], 
+                        ), 
+                      ], 
+                    ), 
+                  ], 
+                ), 
+              ), 
+            ), 
+ 
+            Card( 
+              color: Colors.black, 
+              margin: EdgeInsets.zero, 
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero), 
+              child: Padding( 
+                padding: EdgeInsetsGeometry.only( 
+                  top: 0, 
+                  bottom: 16, 
+                  left: 30, 
+                  right: 16, 
+                ), 
+                child: Row( 
+                  children: [ 
+                    Column( 
+                      children: [ 
+                        CircleAvatar( 
+                          backgroundColor: Color.fromARGB(255, 60, 60, 60), 
+                          radius: 25, 
+                          child: Icon(Icons.person, color: Colors.red, size: 40), 
+                        ), 
+ 
+                        // SizedBox(height: -1), 
+                        Row( 
+                          children: [ 
+                            Icon( 
+                              Icons.circle, 
+                              size: 15, 
+                              color: Colors.black,
+                            ), 
+ 
+                            SizedBox( 
+                              width: 10, 
+                            ),
+ 
+                            Icon( 
+                              Icons.play_circle, 
+                              size: 15, 
+                              color: Colors.blue, 
+                            ), 
+                          ], 
+                        ), 
+                      ], 
+                    ), 
+ 
+                    SizedBox(width: 10), 
+ 
+                    Column( 
+                      crossAxisAlignment: CrossAxisAlignment.start, 
+                      children: [ 
+                        Text( 
+                          'RBReneBaterbonia', 
+                          style: TextStyle( 
+                            fontSize: 20, 
+                            fontFamily: 'sans-serif', 
+                            fontWeight: FontWeight.bold, 
+                            color: Colors.white, 
+                          ), 
+                        ), 
+ 
+                        SizedBox(height: 5), 
+ 
+                        Row( 
+                          crossAxisAlignment: CrossAxisAlignment.end, 
+                          children: [ 
+                            Icon( 
+                              Icons.monitor, 
+                              size: 15, 
+                              color: Colors.white, 
+                            ), 
+ 
+                            SizedBox(width: 1), 
+ 
+                            Text( 
+                              'Playing - VALORANT', 
+                              style: TextStyle( 
+                                fontSize: 15, 
+                                fontFamily: 'sans-serif', 
+                                color: Colors.white, 
+                              ), 
+                            ), 
+                          ], 
+                        ), 
+                      ], 
+                    ), 
+                  ], 
+                ), 
+              ), 
+            ), 
+ 
+            Card( 
+              color: Colors.black, 
+              margin: EdgeInsets.zero, 
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero), 
+              child: Padding( 
+                padding: EdgeInsetsGeometry.only( 
+                  top: 0, 
+                  bottom: 16, 
+                  left: 20, 
+                  right: 16, 
+                ), 
+                child: Row( 
+                  children: [ 
+                    Text( 
+                      'Online', 
+                      style: TextStyle( 
+                        fontSize: 20, 
+                        fontFamily: 'sans-serif', 
+                        fontWeight: FontWeight.bold, 
+                        color: Colors.white, 
+                      ), 
+                    ), 
+ 
+                    SizedBox(width: 10), 
+ 
+                    Text( 
+                      '4', 
+                      style: TextStyle( 
+                        fontSize: 20, 
+                        fontWeight: FontWeight.bold, 
+                        fontFamily: 'sans-serif', 
+                        color: Colors.white, 
+                      ), 
+                    ) 
+                  ], 
+                ), 
+              ), 
+            ), 
+ 
+            Card( 
+              color: Colors.black, 
+              margin: EdgeInsets.zero, 
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero), 
+              child: Padding( 
+                padding: EdgeInsetsGeometry.only( 
+                  top: 0, 
+                  bottom: 16, 
+                  left: 30, 
+                  right: 16, 
+                ), 
+                child: Row( 
+                  children: [ 
+                    Column( 
+                      children: [ 
+                        CircleAvatar( 
+                          backgroundColor: Color.fromARGB(255, 60, 60, 60), 
+                          radius: 25, 
+                          child: Icon(Icons.person, color: Colors.white, size: 40), 
+                        ), 
+ 
+                        // SizedBox(height: -1), 
+                        Row( 
+                          children: [ 
+                            Icon( 
+                              Icons.circle, 
+                              size: 15, 
+                              color: Colors.black,
+                            ), 
+ 
+                            SizedBox( 
+                              width: 10, 
+                            ), 
+ 
+                            Icon( 
+                              Icons.dark_mode, 
+                              size: 15, 
+                              color: Colors.yellow, 
+                            ), 
+                          ], 
+                        ), 
+                      ], 
+                    ), 
+ 
+                    SizedBox(width: 10), 
+ 
+                    Column( 
+                      crossAxisAlignment: CrossAxisAlignment.start, 
+                      children: [ 
+                        Text( 
+                          'WakoKailaSaImongBanaOie', 
+                          style: TextStyle( 
+                            fontSize: 20, 
+                            fontFamily: 'sans-serif', 
+                            fontWeight: FontWeight.bold, 
+                            color: Colors.white, 
+                          ), 
+                        ), 
+ 
+                        SizedBox(height: 5), 
+ 
+                        Row( 
+                          children: [ 
+ 
+                            SizedBox(width: 1), 
+ 
+                            Text( 
+                              'Aavisala', 
+                              style: TextStyle( 
+                                fontSize: 15, 
+                                fontFamily: 'sans-serif', 
+                                color: Colors.white, 
+                              ), 
+                            ), 
+                          ], 
+                        ), 
+                      ], 
+                    ), 
+                  ], 
+                ), 
+              ), 
+            ), 
+ 
+            Card( 
+              color: Colors.black, 
+              margin: EdgeInsets.zero, 
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero), 
+              child: Padding( 
+                padding: EdgeInsetsGeometry.only( 
+                  top: 0, 
+                  bottom: 16, 
+                  left: 30, 
+                  right: 16, 
+                ), 
+                child: Row( 
+                  children: [ 
+                    Column( 
+                      children: [ 
+                        CircleAvatar( 
+                          backgroundColor: Color.fromARGB(255, 60, 60, 60), 
+                          radius: 25, 
+                          child: Icon(Icons.person, color: Colors.white, size: 40),                         
+                        ), 
+ 
+                        // SizedBox(height: -1), 
+                        Row( 
+                          children: [ 
+                            Icon( 
+                              Icons.circle, 
+                              size: 15, 
+                              color: Colors.black, 
+                            ), 
+ 
+                            SizedBox( 
+                              width: 10, 
+                            ), 
+ 
+                            Icon( 
+                              Icons.dark_mode, 
+                              size: 15, 
+                              color: Colors.yellow, 
+                            ), 
+                          ], 
+                        ), 
+                      ], 
+                    ), 
+ 
+                    SizedBox(width: 10), 
+ 
+                    Column( 
+                      crossAxisAlignment: CrossAxisAlignment.start, 
+                      children: [ 
+                        Text( 
+                          'D1yah', 
+                          style: TextStyle( 
+                            fontSize: 20, 
+                            fontFamily: 'sans-serif', 
+                            fontWeight: FontWeight.bold, 
+                            color: Colors.white, 
+                          ), 
+                        ), 
+ 
+                        SizedBox(height: 5), 
+ 
+                        Row( 
+                          children: [ 
+                            Icon( 
+                              Icons.mobile_friendly, 
+                              size: 15, 
+                              color: Colors.white, 
+                            ), 
+ 
+                            SizedBox(width: 1), 
+ 
+                            Text( 
+                              'Away - Riot Mobile', 
+                              style: TextStyle( 
+                                fontSize: 15, 
+                                fontFamily: 'sans-serif', 
+                                color: Colors.white, 
+                              ), 
+                            ), 
+                          ], 
+                        ), 
+                      ], 
+                    ), 
+                  ], 
+                ), 
+              ), 
+            ), 
+          ], 
+        ), 
+      )
+    );
+  } 
+} 
+ 
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(),
-      home: const SocialPage(),
-    );
-  }
-}
-
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: .center,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Chats'),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        body: inbox.isEmpty
+            ? const Center(
+                child: Text(
+                  'Inbox is Empty',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )
+            : ListView.builder(
+                itemCount: messages.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 15,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          radius: 40,
+                          backgroundImage: AssetImage(
+                            profile[index].image,
+                          ),
+                        ),
+                        title: Text(
+                          profile[index].name,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        subtitle: Text(
+                          '${Leachim}\n'
+                          '${james Bro}\n'
+                          '${Kinnot}}\n'
+                          '${Yashipakaka}\n'
+                          '${Memaw}\n',
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
       ),
     );
   }
