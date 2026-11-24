@@ -1,17 +1,29 @@
-# my_first_flutter_app
+﻿# FlutterApp_
 
-A new Flutter project.
+## Student Enrollment System
+
+A Flutter application integrated with a FastAPI backend and Neon PostgreSQL database.
+
+### Features
+- Student Management
+- Student List and Details
+- Add, Edit, and Delete Students
+- Subject Management
+- Schedule Management
+- Enrollment Management
+- Add, Edit, and Delete Enrollments
+- REST API Integration using FastAPI
+- Neon PostgreSQL Database Integration
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+This project is built using Flutter.
 
-A few resources to get you started if this is your first Flutter project:
+For help getting started with Flutter development:
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+- https://docs.flutter.dev/get-started/learn-flutter
+- https://docs.flutter.dev/get-started/codelab
+- https://docs.flutter.dev/reference/learning-resources
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+For Flutter documentation, visit:
+https://docs.flutter.dev/
