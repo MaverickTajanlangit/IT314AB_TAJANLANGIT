@@ -1,7 +1,10 @@
+
 import 'package:flutter/material.dart';
+
 import 'studentlistscreen.dart';
 import 'studentdetailscreen.dart';
 import 'addstudentscreen.dart';
+import 'enrollmentlistscreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,9 +17,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+
       initialRoute: '/student-list',
+
       routes: {
-        '/student-list': (context) => const StudentListScreen(),
+        '/student-list': (context) =>
+        const StudentListScreen(),
+
         '/student-details': (context) {
           final student =
           ModalRoute.of(context)!.settings.arguments as Student;
@@ -25,7 +32,12 @@ class MyApp extends StatelessWidget {
             student: student,
           );
         },
-        '/add-student': (context) => const AddStudentScreen(),
+
+        '/add-student': (context) =>
+        const AddStudentScreen(),
+
+        '/enrollment-list': (context) =>
+        const EnrollmentListScreen(),
       },
     );
   }

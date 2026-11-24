@@ -7,7 +7,6 @@ import 'studentlistscreen.dart';
 class StudentStorage {
   static const String storageKey = 'students';
 
-  // Save all student records locally
   static Future<void> saveStudents() async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -29,34 +28,36 @@ class StudentStorage {
 
     final encodedData = jsonEncode(studentData);
 
-    final saved = await prefs.setString(
-      storageKey,
-      encodedData,
-    );
+    final saved = await prefs.setString(storageKey, encodedData);
 
     debugPrint('SAVE RESULT: $saved');
     debugPrint('STUDENTS SAVED: ${students.length}');
-    debugPrint('SAVED DATA: $encodedData');
   }
 
-  // Load student records from local storage
   static Future<void> loadStudents() async {
     final prefs = await SharedPreferences.getInstance();
-
     final savedData = prefs.getString(storageKey);
 
-    debugPrint('LOADING STUDENTS...');
+    debugPrint('LOADING ORIGINAL STUDENTS...');
     debugPrint('SAVED DATA FOUND: ${savedData != null}');
 
     if (savedData != null) {
       final List<dynamic> studentData = jsonDecode(savedData);
+
+      // If an earlier version saved an empty list,
+      // preserve the six original students already in memory.
+      if (studentData.isEmpty) {
+        debugPrint('EMPTY SAVED LIST. KEEPING ORIGINAL STUDENTS.');
+        await saveStudents();
+        return;
+      }
 
       students.clear();
 
       for (var data in studentData) {
         students.add(
           Student(
-            image: data['image'] ?? 'assets/student1.jpg',
+            image: data['image'] ?? '',
             name: data['name'] ?? '',
             course: data['course'] ?? '',
             yearLevel: data['yearLevel'] ?? '',
@@ -72,12 +73,9 @@ class StudentStorage {
         );
       }
 
-      debugPrint('STUDENTS LOADED: ${students.length}');
+      debugPrint('ORIGINAL STUDENTS LOADED: ${students.length}');
     } else {
-      debugPrint('NO SAVED RECORDS FOUND.');
-      debugPrint('SAVING INITIAL STUDENT RECORDS...');
-
-      // Save the original student records on first launch
+      debugPrint('NO SAVED RECORDS. SAVING ORIGINAL STUDENTS.');
       await saveStudents();
     }
   }

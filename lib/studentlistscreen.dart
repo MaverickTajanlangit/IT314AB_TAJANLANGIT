@@ -1,8 +1,10 @@
 
 import 'package:flutter/material.dart';
+import 'student_api.dart';
 import 'student_storage.dart';
 
 class Student {
+  int? databaseId;
   String image;
   String name;
   String course;
@@ -16,6 +18,7 @@ class Student {
   bool isActive;
 
   Student({
+    this.databaseId,
     required this.image,
     required this.name,
     required this.course,
@@ -30,6 +33,7 @@ class Student {
   });
 }
 
+// Original six students.
 List<Student> students = [
   Student(
     image: 'assets/student1.jpg',
@@ -41,7 +45,6 @@ List<Student> students = [
     studentId: '0001',
     email: 'maverick@mamamail.com',
     favoriteSubject: 'Programming',
-    isActive: true,
   ),
   Student(
     image: 'assets/student2.jpg',
@@ -65,7 +68,6 @@ List<Student> students = [
     studentId: '0003',
     email: 'chimmy@mamamail.com',
     favoriteSubject: 'Web Development',
-    isActive: true,
   ),
   Student(
     image: 'assets/student4.jpg',
@@ -89,7 +91,6 @@ List<Student> students = [
     studentId: '0005',
     email: 'james@mamamail.com',
     favoriteSubject: 'Networking',
-    isActive: true,
   ),
   Student(
     image: 'assets/student6.jpg',
@@ -101,11 +102,61 @@ List<Student> students = [
     studentId: '0006',
     email: 'marick@mamamail.com',
     favoriteSubject: 'Mobile Development',
-    isActive: true,
   ),
 ];
 
-// Shared Edit Student modal
+// Database students are stored separately.
+List<Student> databaseStudents = [];
+
+List<Student> get allStudents => [
+  ...students,
+  ...databaseStudents,
+];
+
+String formatYearLevel(dynamic value) {
+  if (value == null) return '';
+
+  final year = int.tryParse(value.toString());
+
+  switch (year) {
+    case 1:
+      return '1st Year';
+    case 2:
+      return '2nd Year';
+    case 3:
+      return '3rd Year';
+    case 4:
+      return '4th Year';
+    default:
+      return '';
+  }
+}
+
+int? parseYearLevel(String value) {
+  final match = RegExp(r'[1-4]').firstMatch(value);
+
+  if (match == null) return null;
+
+  return int.tryParse(match.group(0)!);
+}
+
+// Convert a Neon database record into a Student object.
+Student studentFromJson(Map<String, dynamic> data) {
+  return Student(
+    databaseId: int.tryParse(data['student_id'].toString()),
+    image: '',
+    name: data['student_name']?.toString() ?? 'Unknown Student',
+    course: data['course']?.toString() ?? 'Not specified',
+    yearLevel: formatYearLevel(data['year_level']),
+    age: 0,
+    hobby: 'Not specified',
+    studentId: data['student_number']?.toString() ?? '',
+    email: data['email']?.toString() ?? '',
+    favoriteSubject: 'Not specified',
+  );
+}
+
+// Shared Edit Student dialog.
 Future<bool?> showStudentEditDialog(
     BuildContext context,
     Student student,
@@ -121,120 +172,195 @@ Future<bool?> showStudentEditDialog(
   final emailController =
   TextEditingController(text: student.email);
 
+  bool isSaving = false;
+
   final result = await showDialog<bool>(
     context: context,
     builder: (dialogContext) {
-      return AlertDialog(
-        title: const Text('Edit Student'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: idController,
-                decoration: const InputDecoration(
-                  labelText: 'Student ID',
-                ),
+      return StatefulBuilder(
+        builder: (context, setDialogState) {
+          return AlertDialog(
+            title: const Text('Edit Student'),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: idController,
+                    decoration: const InputDecoration(
+                      labelText: 'Student ID',
+                    ),
+                  ),
+                  TextField(
+                    controller: nameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Full Name',
+                    ),
+                  ),
+                  TextField(
+                    controller: courseController,
+                    decoration: const InputDecoration(
+                      labelText: 'Course',
+                    ),
+                  ),
+                  TextField(
+                    controller: yearController,
+                    decoration: const InputDecoration(
+                      labelText: 'Year Level',
+                    ),
+                  ),
+                  TextField(
+                    controller: emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: const InputDecoration(
+                      labelText: 'Email Address',
+                    ),
+                  ),
+                ],
               ),
-              TextField(
-                controller: nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Full Name',
-                ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: isSaving
+                    ? null
+                    : () => Navigator.pop(dialogContext, false),
+                child: const Text('Cancel'),
               ),
-              TextField(
-                controller: courseController,
-                decoration: const InputDecoration(
-                  labelText: 'Course',
-                ),
-              ),
-              TextField(
-                controller: yearController,
-                decoration: const InputDecoration(
-                  labelText: 'Year Level',
-                ),
-              ),
-              TextField(
-                controller: emailController,
-                keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                  labelText: 'Email Address',
-                ),
+              ElevatedButton(
+                onPressed: isSaving
+                    ? null
+                    : () async {
+                  final newId = idController.text.trim();
+                  final newName = nameController.text.trim();
+                  final newCourse = courseController.text.trim();
+                  final newYear = yearController.text.trim();
+                  final newEmail = emailController.text.trim();
+
+                  if (newId.isEmpty ||
+                      newName.isEmpty ||
+                      newCourse.isEmpty ||
+                      newYear.isEmpty ||
+                      newEmail.isEmpty) {
+                    ScaffoldMessenger.of(dialogContext)
+                        .showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Please fill in all fields.',
+                        ),
+                      ),
+                    );
+                    return;
+                  }
+
+                  final yearNumber = parseYearLevel(newYear);
+
+                  if (yearNumber == null) {
+                    ScaffoldMessenger.of(dialogContext)
+                        .showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Enter a valid year level (1st Year to 4th Year).',
+                        ),
+                      ),
+                    );
+                    return;
+                  }
+
+                  final duplicateId = allStudents.any(
+                        (other) =>
+                    !identical(other, student) &&
+                        other.studentId.toLowerCase() ==
+                            newId.toLowerCase(),
+                  );
+
+                  if (duplicateId) {
+                    ScaffoldMessenger.of(dialogContext)
+                        .showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Student ID already exists.',
+                        ),
+                      ),
+                    );
+                    return;
+                  }
+
+                  final emailPattern =
+                  RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
+
+                  if (!emailPattern.hasMatch(newEmail)) {
+                    ScaffoldMessenger.of(dialogContext)
+                        .showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Enter a valid email address.',
+                        ),
+                      ),
+                    );
+                    return;
+                  }
+
+                  setDialogState(() {
+                    isSaving = true;
+                  });
+
+                  try {
+                    if (student.databaseId != null) {
+                      await StudentApi.updateStudent(
+                        student.databaseId!,
+                        {
+                          'student_number': newId,
+                          'student_name': newName,
+                          'course': newCourse,
+                          'year_level': yearNumber,
+                          'email': newEmail,
+                        },
+                      );
+                    }
+
+                    student.studentId = newId;
+                    student.name = newName;
+                    student.course = newCourse;
+                    student.yearLevel = newYear;
+                    student.email = newEmail;
+
+                    if (student.databaseId == null) {
+                      await StudentStorage.saveStudents();
+                    }
+
+                    if (!dialogContext.mounted) return;
+
+                    Navigator.pop(dialogContext, true);
+                  } catch (error) {
+                    if (!dialogContext.mounted) return;
+
+                    setDialogState(() {
+                      isSaving = false;
+                    });
+
+                    ScaffoldMessenger.of(dialogContext)
+                        .showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Failed to update student: $error',
+                        ),
+                      ),
+                    );
+                  }
+                },
+                child: isSaving
+                    ? const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                  ),
+                )
+                    : const Text('Save Changes'),
               ),
             ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(dialogContext, false);
-            },
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              final newId = idController.text.trim();
-              final newName = nameController.text.trim();
-              final newCourse = courseController.text.trim();
-              final newYear = yearController.text.trim();
-              final newEmail = emailController.text.trim();
-
-              if (newId.isEmpty ||
-                  newName.isEmpty ||
-                  newCourse.isEmpty ||
-                  newYear.isEmpty ||
-                  newEmail.isEmpty) {
-                ScaffoldMessenger.of(dialogContext).showSnackBar(
-                  const SnackBar(
-                    content: Text('Please fill in all fields.'),
-                  ),
-                );
-                return;
-              }
-
-              final duplicateId = students.any(
-                    (other) =>
-                !identical(other, student) &&
-                    other.studentId.toLowerCase() ==
-                        newId.toLowerCase(),
-              );
-
-              if (duplicateId) {
-                ScaffoldMessenger.of(dialogContext).showSnackBar(
-                  const SnackBar(
-                    content: Text('Student ID already exists.'),
-                  ),
-                );
-                return;
-              }
-
-              final emailPattern =
-              RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
-
-              if (!emailPattern.hasMatch(newEmail)) {
-                ScaffoldMessenger.of(dialogContext).showSnackBar(
-                  const SnackBar(
-                    content: Text('Enter a valid email address.'),
-                  ),
-                );
-                return;
-              }
-
-              student.studentId = newId;
-              student.name = newName;
-              student.course = newCourse;
-              student.yearLevel = newYear;
-              student.email = newEmail;
-
-              await StudentStorage.saveStudents();
-
-              if (!dialogContext.mounted) return;
-
-              Navigator.pop(dialogContext, true);
-            },
-            child: const Text('Save Changes'),
-          ),
-        ],
+          );
+        },
       );
     },
   );
@@ -258,6 +384,7 @@ class StudentListScreen extends StatefulWidget {
 
 class _StudentListScreenState extends State<StudentListScreen> {
   bool isLoading = true;
+  String? errorMessage;
 
   @override
   void initState() {
@@ -266,32 +393,130 @@ class _StudentListScreenState extends State<StudentListScreen> {
   }
 
   Future<void> loadStudentRecords() async {
-    await StudentStorage.loadStudents();
-
-    if (!mounted) return;
-
     setState(() {
-      isLoading = false;
+      isLoading = true;
+      errorMessage = null;
     });
+
+    try {
+      await StudentStorage.loadStudents();
+
+      final records = await StudentApi.getStudents();
+
+      databaseStudents = records.map((record) {
+        return studentFromJson(
+          Map<String, dynamic>.from(record),
+        );
+      }).toList();
+
+      if (!mounted) return;
+
+      setState(() {
+        isLoading = false;
+      });
+    } catch (error) {
+      if (!mounted) return;
+
+      setState(() {
+        isLoading = false;
+        errorMessage = error.toString();
+      });
+    }
+  }
+
+  Widget buildStudentImage(Student student) {
+    if (student.image.isEmpty) {
+      return const CircleAvatar(
+        radius: 35,
+        child: Icon(Icons.person, size: 40),
+      );
+    }
+
+    return ClipOval(
+      child: Image.asset(
+        student.image,
+        width: 70,
+        height: 70,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return const CircleAvatar(
+            radius: 35,
+            child: Icon(Icons.person, size: 40),
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> deleteStudent(Student student) async {
+    try {
+      if (student.databaseId != null) {
+        await StudentApi.deleteStudent(student.databaseId!);
+        databaseStudents.remove(student);
+      } else {
+        students.remove(student);
+        await StudentStorage.saveStudents();
+      }
+
+      if (!mounted) return;
+
+      setState(() {});
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Student deleted successfully.'),
+        ),
+      );
+    } catch (error) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to delete student: $error'),
+        ),
+      );
+    }
+  }
+
+  // Navigate to the Enrollment List screen.
+  void openEnrollmentList() {
+    Navigator.pushNamed(context, '/enrollment-list');
   }
 
   @override
   Widget build(BuildContext context) {
-    students.sort((a, b) => a.name.compareTo(b.name));
+    final displayedStudents = [...allStudents]
+      ..sort((a, b) => a.name.compareTo(b.name));
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Students Updated List'),
         actions: [
+          // Enrollment List button.
           IconButton(
+            tooltip: 'Enrollment List',
+            onPressed: openEnrollmentList,
+            icon: const Icon(Icons.assignment),
+          ),
+
+          IconButton(
+            tooltip: 'Refresh Students',
+            onPressed: loadStudentRecords,
+            icon: const Icon(Icons.refresh),
+          ),
+
+          IconButton(
+            tooltip: 'Add Student',
             onPressed: () async {
               final result = await Navigator.pushNamed(
                 context,
                 '/add-student',
               );
 
-              if (result == true && mounted) {
-                setState(() {});
+              if (!mounted) return;
+
+              if (result == true) {
+                await loadStudentRecords();
               }
             },
             icon: const Icon(Icons.add),
@@ -302,160 +527,181 @@ class _StudentListScreenState extends State<StudentListScreen> {
           ? const Center(
         child: CircularProgressIndicator(),
       )
-          : students.isEmpty
-          ? const Center(
+          : displayedStudents.isEmpty
+          ? Center(
         child: Text(
-          'No students found',
-          style: TextStyle(fontSize: 20),
+          errorMessage ?? 'No students found',
+          textAlign: TextAlign.center,
         ),
       )
-          : ListView.builder(
-        itemCount: students.length,
-        itemBuilder: (context, index) {
-          final student = students[index];
-
-          return Card(
-            margin: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 12,
+          : Column(
+        children: [
+          if (errorMessage != null)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              color: Colors.orange.shade100,
+              child: Text(
+                'Database could not be refreshed. '
+                    'Showing available local students.\n'
+                    '$errorMessage',
+              ),
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  InkWell(
-                    onTap: () async {
-                      await Navigator.pushNamed(
-                        context,
-                        '/student-details',
-                        arguments: student,
-                      );
+          Expanded(
+            child: ListView.builder(
+              itemCount: displayedStudents.length,
+              itemBuilder: (context, index) {
+                final student = displayedStudents[index];
 
-                      if (mounted) {
-                        setState(() {});
-                      }
-                    },
-                    child: Row(
-                      crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                return Card(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 12,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
                       children: [
-                        ClipOval(
-                          child: Image.asset(
-                            student.image,
-                            width: 70,
-                            height: 70,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        const SizedBox(width: 14),
-                        Expanded(
-                          child: Column(
+                        InkWell(
+                          onTap: () async {
+                            await Navigator.pushNamed(
+                              context,
+                              '/student-details',
+                              arguments: student,
+                            );
+
+                            if (!mounted) return;
+
+                            setState(() {});
+                          },
+                          child: Row(
                             crossAxisAlignment:
                             CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                student.name,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight:
-                                  FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(student.course),
-                              Text(student.yearLevel),
-                              Text('Age: ${student.age}'),
-                              Text('Hobby: ${student.hobby}'),
-                              Text(
-                                'Student ID: ${student.studentId}',
-                              ),
-                              Text(
-                                'Email: ${student.email}',
-                              ),
-                              Text(
-                                'Favorite Subject: ${student.favoriteSubject}',
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                student.isActive
-                                    ? 'Active'
-                                    : 'Inactive',
-                                style: const TextStyle(
-                                  fontWeight:
-                                  FontWeight.bold,
-                                ),
-                              ),
-                              if (student.isFavorite)
-                                const Padding(
-                                  padding: EdgeInsets.only(
-                                    top: 5,
-                                  ),
-                                  child: Text(
-                                    'Favorite',
-                                    style: TextStyle(
-                                      fontWeight:
-                                      FontWeight.bold,
+                              buildStudentImage(student),
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      student.name,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight:
+                                        FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
+                                    const SizedBox(height: 4),
+                                    Text(student.course),
+                                    Text(
+                                      student.yearLevel.isEmpty
+                                          ? 'Year Level: Not specified'
+                                          : student.yearLevel,
+                                    ),
+                                    Text(
+                                      student.age == 0
+                                          ? 'Age: Not specified'
+                                          : 'Age: ${student.age}',
+                                    ),
+                                    Text(
+                                      'Hobby: ${student.hobby}',
+                                    ),
+                                    Text(
+                                      'Student ID: ${student.studentId.isEmpty ? 'Not provided' : student.studentId}',
+                                    ),
+                                    Text(
+                                      'Email: ${student.email.isEmpty ? 'Not provided' : student.email}',
+                                    ),
+                                    Text(
+                                      'Favorite Subject: ${student.favoriteSubject}',
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      student.isActive
+                                          ? 'Active'
+                                          : 'Inactive',
+                                      style: const TextStyle(
+                                        fontWeight:
+                                        FontWeight.bold,
+                                      ),
+                                    ),
+                                    if (student.isFavorite)
+                                      const Padding(
+                                        padding: EdgeInsets.only(
+                                          top: 5,
+                                        ),
+                                        child: Text(
+                                          'Favorite',
+                                          style: TextStyle(
+                                            fontWeight:
+                                            FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                  ],
                                 ),
+                              ),
                             ],
                           ),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment:
+                          MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              onPressed: () async {
+                                setState(() {
+                                  student.isFavorite =
+                                  !student.isFavorite;
+                                });
+
+                                if (student.databaseId == null) {
+                                  await StudentStorage
+                                      .saveStudents();
+                                }
+                              },
+                              icon: Icon(
+                                student.isFavorite
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () async {
+                                final result =
+                                await showStudentEditDialog(
+                                  context,
+                                  student,
+                                );
+
+                                if (!mounted) return;
+
+                                if (result == true) {
+                                  setState(() {});
+                                }
+                              },
+                              icon: const Icon(Icons.edit),
+                            ),
+                            if (student.isActive)
+                              IconButton(
+                                onPressed: () async {
+                                  await deleteStudent(student);
+                                },
+                                icon: const Icon(Icons.delete),
+                              ),
+                          ],
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  Row(
-                    mainAxisAlignment:
-                    MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        onPressed: () async {
-                          setState(() {
-                            student.isFavorite =
-                            !student.isFavorite;
-                          });
-
-                          await StudentStorage.saveStudents();
-                        },
-                        icon: Icon(
-                          student.isFavorite
-                              ? Icons.favorite
-                              : Icons.favorite_border,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () async {
-                          final result =
-                          await showStudentEditDialog(
-                            context,
-                            student,
-                          );
-
-                          if (result == true && mounted) {
-                            setState(() {});
-                          }
-                        },
-                        icon: const Icon(Icons.edit),
-                      ),
-                      if (student.isActive)
-                        IconButton(
-                          onPressed: () async {
-                            setState(() {
-                              students.removeAt(index);
-                            });
-
-                            await StudentStorage.saveStudents();
-                          },
-                          icon: const Icon(Icons.delete),
-                        ),
-                    ],
-                  ),
-                ],
-              ),
+                );
+              },
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }
